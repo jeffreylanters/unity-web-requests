@@ -1,0 +1,6 @@
+{
+  "name": "nl.jeffreylanters.web-requests",
+  "displayName": "Web Requests",
+  "version": "1.0.0",
+  "description": "The WebRequest API is heavily inspired by Fetch and provides an interface for accessing and manipulating parts of the HTTP pipeline by implementing a Request model that provides an easy, logical way to fetch resources asynchronously across the network."
+}
