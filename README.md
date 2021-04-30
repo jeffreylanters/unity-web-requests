@@ -6,7 +6,7 @@
 </br>
 
 [![openupm](https://img.shields.io/npm/v/nl.jeffreylanters.web-requests?label=UPM&registry_uri=https://package.openupm.com&style=for-the-badge&color=232c37)](https://openupm.com/packages/nl.jeffreylanters.web-requests/)
-[![](https://img.shields.io/github/stars/jeffreylanters/unity-tweens.svg?style=for-the-badge)]()
+[![](https://img.shields.io/github/stars/jeffreylanters/unity-web-requests.svg?style=for-the-badge)]()
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg?style=for-the-badge)]()
 
 The WebRequest API provides an interface for accessing and manipulating parts of the HTTP pipeline by implementing a Request model that provides an easy, logical way to fetch resources asynchronously across the network.
