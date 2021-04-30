@@ -51,4 +51,19 @@ openupm add nl.jeffreylanters.web-requests
 
 # Documentation
 
-...
+## Example Usage
+
+```csharp
+public class MyGameObject : MonoBehaviour {
+  public async void Start () {
+    var users = await WebRequest.Send<User>("https://my.api.com/users");
+    var user = await WebRequest.Send<User>("https://my.api.com/users") {
+      method = RequestMethod.Post,
+      payload = new User() {
+        userName = "Jeffrey",
+        age = 27
+      }
+    };
+  }
+}
+```
