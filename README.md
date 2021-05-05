@@ -56,23 +56,23 @@ openupm add nl.jeffreylanters.web-requests
 ```csharp
 public class WebRequestTest : MonoBehaviour {
 
-  public class AuthenticationRequestModel {
+  public class AuthenticationRequest {
     public string userName;
     public string password;
   }
 
-  public class AuthenticationResponseModel {
+  public class AuthenticationResponse {
     public string token;
   }
 
   public async void Start () {
     try {
-      var authentication = await new WebRequest<AuthenticationResponseModel> ("https://development-api.asgaard-saga.nl/authenticate") {
+      var authentication = await new WebRequest<AuthenticationResponse> ("https://myapi.com/auth") {
         method = RequestMethod.Post,
         contentType = ContentType.ApplicationJson,
-        body = JsonUtility.ToJson (new AuthenticationRequestModel () {
-          userName = "jeffrey",
-          password = ""
+        body = JsonUtility.ToJson (new AuthenticationRequest () {
+          userName = "Jeffrey",
+          password = "password"
         }),
         headers = new Header[] {
           new Header("ApplicationVersion", Application.version)
