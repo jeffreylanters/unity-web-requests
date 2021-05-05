@@ -54,16 +54,34 @@ openupm add nl.jeffreylanters.web-requests
 ## Example Usage
 
 ```csharp
-public class MyGameObject : MonoBehaviour {
+public class WebRequestTest : MonoBehaviour {
+
+  public class AuthenticationRequestModel {
+    public string userName;
+    public string password;
+  }
+
+  public class AuthenticationResponseModel {
+    public string token;
+  }
+
   public async void Start () {
-    var users = await WebRequest.Send<User>("https://my.api.com/users");
-    var user = await WebRequest.Send<User>("https://my.api.com/users") {
-      method = RequestMethod.Post,
-      payload = new User() {
-        userName = "Jeffrey",
-        age = 27
-      }
-    };
+    try {
+      var authentication = await new WebRequest<AuthenticationResponseModel> ("https://development-api.asgaard-saga.nl/authenticate") {
+        method = RequestMethod.Post,
+        contentType = ContentType.ApplicationJson,
+        body = JsonUtility.ToJson (new AuthenticationRequestModel () {
+          userName = "jeffrey",
+          password = ""
+        }),
+        headers = new Header[] {
+          new Header("ApplicationVersion", Application.version)
+        }
+      }.Send ();
+      Debug.Log ($"You're authenticated {authentication.token}");
+    } catch (WebRequestException webRequestException) {
+      Debug.Log ($"Something went wrong, response code: {webRequestException.httpStatusCode}");
+    }
   }
 }
 ```
