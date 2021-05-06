@@ -93,3 +93,7 @@ public class WebRequestTest : MonoBehaviour {
   }
 }
 ```
+
+## Supported Content Types
+
+PlainText and ApplicationJson
