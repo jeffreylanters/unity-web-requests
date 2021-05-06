@@ -24,6 +24,9 @@ namespace JeffreyLanters.WebRequests {
   /// <typeparam name="ResponseDataType">The type the response will be cased to.</typeparam>
   public class WebRequest<ResponseDataType> where ResponseDataType : class {
 
+    /// <summary>
+    /// The URL of the webrequest.
+    /// </summary>
     public string url { get; private set; } = "";
 
     public RequestMethod method = RequestMethod.Get;
@@ -36,20 +39,26 @@ namespace JeffreyLanters.WebRequests {
 
     private UnityWebRequest unityWebRequest = new UnityWebRequest ();
 
+    /// <summary>
+    /// Creates a new web request.
+    /// </summary>
+    /// <param name="url">The URL of the web request.</param>
     public WebRequest (string url) {
       this.url = url;
     }
 
     public async Task<ResponseDataType> Send () {
       var _didComplete = false;
-      RoutineTicker.StartCompletableCoroutine (this.SomeThing (), () => _didComplete = true);
+      RoutineTicker.StartCompletableCoroutine (this.CreateUnityWebRequest (), () => _didComplete = true);
       while (_didComplete == false)
         await Task.Delay (1);
       // how the reponse will be parsed is based on the reponses's content type
       return JsonUtility.FromJson<ResponseDataType> ("{ \"token\":\"123abc\" }");
     }
 
-    private IEnumerator SomeThing () {
+    private IEnumerator CreateUnityWebRequest () {
+      this.unityWebRequest.method = this.method.ToString ().ToUpper ();
+      this.unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", this.unityWebRequest.method);
       yield return new WaitForSeconds (2);
     }
   }
