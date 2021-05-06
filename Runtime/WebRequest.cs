@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Threading.Tasks;
 using JeffreyLanters.WebRequests.Core;
 using UnityEngine.Networking;
@@ -40,30 +41,16 @@ namespace JeffreyLanters.WebRequests {
     }
 
     public async Task<ResponseDataType> Send () {
-      await Task.Delay (2500);
-
+      var _didComplete = false;
+      RoutineTicker.StartCompletableCoroutine (this.SomeThing (), () => _didComplete = true);
+      while (_didComplete == false)
+        await Task.Delay (1);
       // how the reponse will be parsed is based on the reponses's content type
       return JsonUtility.FromJson<ResponseDataType> ("{ \"token\":\"123abc\" }");
     }
 
-    // public WebRequest SetBody<ResponseDataType> (string json) {
-    //   // TODO
-    //   return this;
-    // }
-
-    // public WebRequest<ResponseDataType> SetJsonBody<RequestDataType> (RequestDataType data) where RequestDataType : class {
-    //   // TODO
-    //   return this;
-    // }
-
-    // public async Task<ResponseDataType> Send () where ResponseDataType : class {
-    //   // while (this.timer < this.duration) {
-    //   //   this.timer += Time.deltaTime;
-    //   //   await Task.Delay (1);
-    //   // }
-    //   // if (Random.Range (0, 100) > 50)
-    //   //   throw new WebRequestException (500, "Oh", "No");
-    //   return JsonUtility.FromJson<ResponseDataType> ("{ }");
-    // }
+    private IEnumerator SomeThing () {
+      yield return new WaitForSeconds (2);
+    }
   }
 }
