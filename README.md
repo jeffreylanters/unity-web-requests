@@ -56,29 +56,37 @@ openupm add nl.jeffreylanters.web-requests
 ```csharp
 public class WebRequestTest : MonoBehaviour {
 
+  [Serializable]
   public class AuthenticationRequest {
     public string userName;
     public string password;
   }
 
+  [Serializable]
   public class AuthenticationResponse {
     public string token;
   }
 
+  [Serializable]
+  public class User {
+    public string firstName;
+  }
+
   public async void Start () {
     try {
-      var authentication = await new WebRequest<AuthenticationResponse> ("https://myapi.com/auth") {
+      var authentication = await new WebRequest<AuthenticationResponse> ("https://myapi.com/authenticate") {
         method = RequestMethod.Post,
         contentType = ContentType.ApplicationJson,
         body = JsonUtility.ToJson (new AuthenticationRequest () {
           userName = "Jeffrey",
           password = "password"
-        }),
+        })
+      }.Send ();
+      var users = await new WebRequest<User[]> ("https://myapi.com/users") {
         headers = new Header[] {
-          new Header("ApplicationVersion", Application.version)
+          new Header("Authentication", authentication.token)
         }
       }.Send ();
-      Debug.Log ($"You're authenticated {authentication.token}");
     } catch (WebRequestException webRequestException) {
       Debug.Log ($"Something went wrong, response code: {webRequestException.httpStatusCode}");
     }
