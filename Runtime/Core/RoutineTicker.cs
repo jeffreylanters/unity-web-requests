@@ -13,22 +13,35 @@ namespace JeffreyLanters.WebRequests.Core {
     /// Reference to the routine ticker component instance, this component will
     /// be used for housing the web request enumerators.
     /// </summary>
-    private static RoutineTickerComponent component;
+    private static RoutineTickerComponent routineTickerComponent = null;
 
     /// <summary>
     /// Anonymous mono behaviour used for ticking enumators.
     /// </summary>
-    private class RoutineTickerComponent : MonoBehaviour { }
+    private class RoutineTickerComponent : MonoBehaviour {
+
+      /// <summary>
+      /// Starts a coroutine using a given enumerator and will invoke a complete
+      /// event handler.
+      /// </summary>
+      /// <param name="routine">The coroutine.</param>
+      /// <returns>An enumerator.</returns>
+      public IEnumerator StartCompletableCoroutine (IEnumerator routine, Action onComplete) {
+        yield return this.StartCoroutine (routine);
+        onComplete ();
+      }
+    }
 
     /// <summary>
-    /// Starts a coroutine using a given enumerator.
+    /// Starts a coroutine using a given enumerator and will invoke a complete
+    /// event handler.
     /// </summary>
     /// <param name="routine">The coroutine.</param>
     /// <returns>An enumerator.</returns>
-    public static IEnumerator StartCoroutine (IEnumerator routine) {
-      if (component == null)
-        component = new GameObject ("~RoutineTicker").AddComponent<RoutineTickerComponent> ();
-      yield return component.StartCoroutine (routine);
+    public static void StartCompletableCoroutine (IEnumerator routine, Action onComplete) {
+      if (RoutineTicker.routineTickerComponent == null)
+        RoutineTicker.routineTickerComponent = new GameObject ("~RoutineTicker").AddComponent<RoutineTickerComponent> ();
+      RoutineTicker.routineTickerComponent.StartCoroutine (RoutineTicker.routineTickerComponent.StartCompletableCoroutine (routine, onComplete));
     }
   }
 }
