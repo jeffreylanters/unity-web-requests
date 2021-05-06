@@ -9,7 +9,7 @@
 [![](https://img.shields.io/github/stars/jeffreylanters/unity-web-requests.svg?style=for-the-badge)]()
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg?style=for-the-badge)]()
 
-The WebRequest API provides an interface for accessing and manipulating parts of the HTTP pipeline by implementing a Request model that provides an easy, logical way to fetch resources asynchronously across the network.
+The WebRequest API provides an interface for accessing the HTTP pipeline by implementing a Request model that provides an easy, await-able and extendable way to fetch resources asynchronously across the network.
 
 **&Lt;**
 [**Installation**](#installation) &middot;
