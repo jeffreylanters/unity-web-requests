@@ -31,7 +31,7 @@ namespace JeffreyLanters.WebRequests {
     public HttpStatus httpStatus { get; } = HttpStatus.Undefined;
 
     /// <summary>
-    /// Instanciates a new request exception which may be thrown.
+    /// Creates a new request exception which may be thrown.
     /// </summary>
     /// <param name="httpStatusCode">The status code of the servers response.</param>
     /// <param name="rawResponseData">The raw response data of the catched request, may contain information.</param>
