@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using JeffreyLanters.WebRequests.Core;
 using UnityEngine.Networking;
+using System.Text;
 
 namespace JeffreyLanters.WebRequests {
 
@@ -25,7 +26,7 @@ namespace JeffreyLanters.WebRequests {
   public class WebRequest<ResponseDataType> where ResponseDataType : class {
 
     /// <summary>
-    /// The URL of the webrequest.
+    /// The URL of the web request.
     /// </summary>
     public string url { get; private set; } = "";
 
@@ -33,11 +34,15 @@ namespace JeffreyLanters.WebRequests {
 
     public ContentType contentType = ContentType.TextPlain;
 
+    /// <summary>
+    /// The raw body of the web request, this value will be encoded. Use the
+    /// contet type to define the type of the body, this is plain text by default.
+    /// </summary>
     public string body = "";
 
     public Header[] headers = new Header[0];
 
-    private UnityWebRequest unityWebRequest = new UnityWebRequest ();
+    private UnityWebRequest unityWebRequest = null;
 
     /// <summary>
     /// Creates a new web request.
@@ -49,17 +54,26 @@ namespace JeffreyLanters.WebRequests {
 
     public async Task<ResponseDataType> Send () {
       var _didComplete = false;
-      RoutineTicker.StartCompletableCoroutine (this.CreateUnityWebRequest (), () => _didComplete = true);
+      RoutineTicker.StartCompletableCoroutine (
+        this.CreateAndSendUnityWebRequest (),
+        () => _didComplete = true);
       while (_didComplete == false)
-        await Task.Delay (1);
-      // how the reponse will be parsed is based on the reponses's content type
-      return JsonUtility.FromJson<ResponseDataType> ("{ \"token\":\"123abc\" }");
+        await Task.Yield ();
+      return JsonUtility.FromJson<ResponseDataType> ("{ }"); // TODO
     }
 
-    private IEnumerator CreateUnityWebRequest () {
+    private IEnumerator CreateAndSendUnityWebRequest () {
+      this.unityWebRequest = new UnityWebRequest (this.url);
       this.unityWebRequest.method = this.method.ToString ().ToUpper ();
       this.unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", this.unityWebRequest.method);
-      yield return new WaitForSeconds (2);
+      foreach (var _header in this.headers)
+        this.unityWebRequest.SetRequestHeader (_header.name, _header.value);
+      if (this.body.Length > 0) {
+        this.unityWebRequest.uploadHandler = new UploadHandlerRaw (Encoding.ASCII.GetBytes (this.body));
+        this.unityWebRequest.uploadHandler.contentType = this.contentType.Stringify ();
+      }
+      this.unityWebRequest.downloadHandler = new DownloadHandlerBuffer ();
+      yield return this.unityWebRequest.SendWebRequest ();
     }
   }
 }
