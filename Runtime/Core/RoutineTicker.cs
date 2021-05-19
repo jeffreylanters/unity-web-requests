@@ -25,6 +25,7 @@ namespace JeffreyLanters.WebRequests.Core {
       /// event handler.
       /// </summary>
       /// <param name="routine">The coroutine.</param>
+      /// <param name="onComplete">Event handler which will invoke after the routine completes.</param>
       /// <returns>An enumerator.</returns>
       public IEnumerator StartCompletableCoroutine (IEnumerator routine, Action onComplete) {
         yield return this.StartCoroutine (routine);
@@ -37,6 +38,7 @@ namespace JeffreyLanters.WebRequests.Core {
     /// event handler.
     /// </summary>
     /// <param name="routine">The coroutine.</param>
+    /// <param name="onComplete">Event handler which will invoke after the routine completes.</param>
     /// <returns>An enumerator.</returns>
     public static void StartCompletableCoroutine (IEnumerator routine, Action onComplete) {
       if (RoutineTicker.routineTickerComponent == null)
