@@ -17,4 +17,25 @@ namespace JeffreyLanters.WebRequests {
     /// </summary>
     ApplicationJson = 1,
   }
+
+  /// <summary>
+  /// Extension class for Content Type enum.
+  /// </summary>
+  public static class ContentTypeExtension {
+
+    /// <summary>
+    /// Converts the content type into a http valid string value.
+    /// </summary>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>Http valid value.</returns>
+    public static string ToHttpContentTypeString (this ContentType contentType) {
+      switch (contentType) {
+        default:
+        case ContentType.TextPlain:
+          return "text/plain";
+        case ContentType.ApplicationJson:
+          return "application/json";
+      }
+    }
+  }
 }
