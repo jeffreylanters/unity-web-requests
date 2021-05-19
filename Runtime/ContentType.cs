@@ -24,17 +24,32 @@ namespace JeffreyLanters.WebRequests {
   public static class ContentTypeExtension {
 
     /// <summary>
-    /// Converts the content type into a http valid string value.
+    /// Stringifies the content type into a http valid string value.
     /// </summary>
     /// <param name="contentType">The content type.</param>
-    /// <returns>Http valid value.</returns>
-    public static string ToHttpContentTypeString (this ContentType contentType) {
+    /// <returns>Stringified content type.</returns>
+    public static string Stringify (this ContentType contentType) {
       switch (contentType) {
         default:
         case ContentType.TextPlain:
           return "text/plain";
         case ContentType.ApplicationJson:
           return "application/json";
+      }
+    }
+
+    /// <summary>
+    /// Parses a http valid string value into a content type.
+    /// </summary>
+    /// <param name="stringifiedContentType">The stringified content type.</param>
+    /// <returns>Content type.</returns>
+    public static ContentType Parse (string stringifiedContentType) {
+      switch (stringifiedContentType) {
+        default:
+        case "text/plain":
+          return ContentType.TextPlain;
+        case "application/json":
+          return ContentType.ApplicationJson;
       }
     }
   }
