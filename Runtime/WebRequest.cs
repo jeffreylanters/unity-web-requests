@@ -59,6 +59,21 @@ namespace JeffreyLanters.WebRequests {
         () => _didComplete = true);
       while (_didComplete == false)
         await Task.Yield ();
+
+      // this.hasError = this.responseCode >= 400 || this.responseCode == 0;
+      // this.rawResponseData = this.downloadHandler.text;
+      // this.hasResponseData = this.rawResponseData.Trim ().Length > 0;
+      // if (this.hasError == false && this.hasResponseData == true)
+      //   this.responseData = typeof (ModelType).IsArray ?
+      //     JsonUtility.FromJson<JsonArrayWrapper<ModelType>> (json: $"{{\"array\":{this.rawResponseData}}}").array :
+      //     JsonUtility.FromJson<ModelType> (json: this.rawResponseData);
+
+      // return new RequestException (
+      //   statusCode: (int)this.responseCode,
+      //   rawResponseData: this.rawResponseData,
+      //   url: this.url
+      // );
+
       return JsonUtility.FromJson<ResponseDataType> ("{ }"); // TODO
     }
 
