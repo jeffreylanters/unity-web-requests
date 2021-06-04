@@ -38,6 +38,7 @@ namespace JeffreyLanters.WebRequests {
     public static string Stringify (this ContentType contentType) {
       switch (contentType) {
         default:
+        case ContentType.Unsupported:
         case ContentType.TextPlain:
           return "text/plain";
         case ContentType.ApplicationJson:
