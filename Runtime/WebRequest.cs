@@ -69,7 +69,6 @@ namespace JeffreyLanters.WebRequests {
       var _responseText = this.unityWebRequest.downloadHandler.text;
       var _hasResponseText = _responseText.Trim ().Length > 0;
       if (_hasResponseText == true) {
-        Debug.Log (this.unityWebRequest.GetResponseHeader ("Content-Type"));
         switch (ContentTypeExtension.Parse (this.unityWebRequest)) {
           default:
           case ContentType.Unsupported:
