@@ -1,3 +1,5 @@
+using UnityEngine.Networking;
+
 namespace JeffreyLanters.WebRequests {
 
   /// <summary>
@@ -16,6 +18,11 @@ namespace JeffreyLanters.WebRequests {
     /// JavaScript Object Notation.
     /// </summary>
     ApplicationJson = 1,
+
+    /// <summary>
+    /// A not supported content type.
+    /// </summary>
+    Unsupported = 999,
   }
 
   /// <summary>
@@ -42,15 +49,25 @@ namespace JeffreyLanters.WebRequests {
     /// Parses a http valid string value into a content type.
     /// </summary>
     /// <param name="stringifiedContentType">The stringified content type.</param>
-    /// <returns>Content type.</returns>
+    /// <returns>The Content type.</returns>
     public static ContentType Parse (string stringifiedContentType) {
       switch (stringifiedContentType) {
         default:
+          return ContentType.Unsupported;
         case "text/plain":
           return ContentType.TextPlain;
         case "application/json":
           return ContentType.ApplicationJson;
       }
+    }
+
+    /// <summary>
+    /// Parses the headers of a unity web request value into a content type.
+    /// </summary>
+    /// <param name="unityWebRequest"></param>
+    /// <returns>The Content type.</returns>
+    public static ContentType Parse (UnityWebRequest unityWebRequest) {
+      return ContentTypeExtension.Parse (unityWebRequest.GetResponseHeader ("Content-Type").Split (';')[0].ToLower ());
     }
   }
 }
