@@ -59,22 +59,30 @@ namespace JeffreyLanters.WebRequests {
         () => _didComplete = true);
       while (_didComplete == false)
         await Task.Yield ();
+      if (this.unityWebRequest.result != UnityWebRequest.Result.Success)
+        throw new WebRequestException (
+          (int)this.unityWebRequest.responseCode,
+          this.unityWebRequest.downloadHandler.text,
+          this.url
+        );
 
-      // this.hasError = this.responseCode >= 400 || this.responseCode == 0;
-      // this.rawResponseData = this.downloadHandler.text;
-      // this.hasResponseData = this.rawResponseData.Trim ().Length > 0;
-      // if (this.hasError == false && this.hasResponseData == true)
-      //   this.responseData = typeof (ModelType).IsArray ?
-      //     JsonUtility.FromJson<JsonArrayWrapper<ModelType>> (json: $"{{\"array\":{this.rawResponseData}}}").array :
-      //     JsonUtility.FromJson<ModelType> (json: this.rawResponseData);
-
-      // return new RequestException (
-      //   statusCode: (int)this.responseCode,
-      //   rawResponseData: this.rawResponseData,
-      //   url: this.url
-      // );
-
-      return JsonUtility.FromJson<ResponseDataType> ("{ }"); // TODO
+      var _responseText = this.unityWebRequest.downloadHandler.text;
+      var _hasResponseText = _responseText.Trim ().Length > 0;
+      if (_hasResponseText == true) {
+        Debug.Log (this.unityWebRequest.GetResponseHeader ("Content-Type"));
+        switch (ContentTypeExtension.Parse (this.unityWebRequest)) {
+          default:
+          case ContentType.Unsupported:
+            return default (ResponseDataType);
+          case ContentType.TextPlain:
+            return _responseText as ResponseDataType;
+          case ContentType.ApplicationJson:
+            return typeof (ResponseDataType).IsArray ?
+              JsonUtility.FromJson<JsonArrayWrapper<ResponseDataType>> ($"{{\"array\":{_responseText}}}").array :
+              JsonUtility.FromJson<ResponseDataType> (_responseText);
+        }
+      }
+      return default (ResponseDataType);
     }
 
     private IEnumerator CreateAndSendUnityWebRequest () {
