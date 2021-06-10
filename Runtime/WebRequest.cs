@@ -61,9 +61,9 @@ namespace JeffreyLanters.WebRequests {
     }
 
     /// <summary>
-    /// 
+    /// Sends the web request.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A task which will return the response.</returns>
     public async Task<ResponseDataType> Send () {
       //
       var _didComplete = false;
@@ -104,17 +104,18 @@ namespace JeffreyLanters.WebRequests {
     }
 
     /// <summary>
-    /// 
+    /// Invokes the send method on web request handler.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>An enumerator yielding the web request.</returns>
     private IEnumerator SendWebRequestHandler (WebRequestHandler unityWebRequest) {
       yield return unityWebRequest.SendWebRequest ();
     }
 
     /// <summary>
-    /// 
+    /// Converts the configuration into a web request handler model which allows
+    /// the web request to be sendt.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A web request handler.</returns>
     private WebRequestHandler ToWebRequestHandler () {
       //
       var _unityWebRequest = new WebRequestHandler ();
