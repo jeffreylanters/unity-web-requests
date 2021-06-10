@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Threading.Tasks;
 using JeffreyLanters.WebRequests.Core;
-using UnityEngine.Networking;
 using System.Text;
 
 namespace JeffreyLanters.WebRequests {
@@ -67,14 +67,14 @@ namespace JeffreyLanters.WebRequests {
     public async Task<ResponseDataType> Send () {
       //
       var _didComplete = false;
-      var _unityWebRequest = this.ToUnityWebRequest ();
+      var _unityWebRequest = this.ToWebRequestHandler ();
       RoutineTicker.StartCompletableCoroutine (
-        this.SendUnityWebRequest (_unityWebRequest),
+        this.SendWebRequestHandler (_unityWebRequest),
         () => _didComplete = true);
       while (_didComplete == false)
         await Task.Yield ();
       //
-      if (_unityWebRequest.result != UnityWebRequest.Result.Success)
+      if (_unityWebRequest.result != WebRequestHandler.Result.Success)
         throw new WebRequestException (
           (int)_unityWebRequest.responseCode,
           _unityWebRequest.downloadHandler.text,
@@ -107,7 +107,7 @@ namespace JeffreyLanters.WebRequests {
     /// 
     /// </summary>
     /// <returns></returns>
-    private IEnumerator SendUnityWebRequest (UnityWebRequest unityWebRequest) {
+    private IEnumerator SendWebRequestHandler (WebRequestHandler unityWebRequest) {
       yield return unityWebRequest.SendWebRequest ();
     }
 
@@ -115,9 +115,10 @@ namespace JeffreyLanters.WebRequests {
     /// 
     /// </summary>
     /// <returns></returns>
-    private UnityWebRequest ToUnityWebRequest () {
+    private WebRequestHandler ToWebRequestHandler () {
       //
-      var _unityWebRequest = new UnityWebRequest (this.url);
+      var _unityWebRequest = new WebRequestHandler ();
+      _unityWebRequest.url = this.url;
       _unityWebRequest.method = this.method.ToString ().ToUpper ();
       _unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", _unityWebRequest.method);
       //
