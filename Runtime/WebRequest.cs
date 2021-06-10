@@ -53,11 +53,6 @@ namespace JeffreyLanters.WebRequests {
     public Header[] headers = new Header[0];
 
     /// <summary>
-    /// 
-    /// </summary>
-    private UnityWebRequest unityWebRequest = null;
-
-    /// <summary>
     /// Creates a new web request.
     /// </summary>
     /// <param name="url">The URL of the web request.</param>
@@ -72,23 +67,24 @@ namespace JeffreyLanters.WebRequests {
     public async Task<ResponseDataType> Send () {
       //
       var _didComplete = false;
+      var _unityWebRequest = this.ToUnityWebRequest ();
       RoutineTicker.StartCompletableCoroutine (
-        this.CreateAndSendUnityWebRequest (),
+        this.SendUnityWebRequest (_unityWebRequest),
         () => _didComplete = true);
       while (_didComplete == false)
         await Task.Yield ();
       //
-      if (this.unityWebRequest.result != UnityWebRequest.Result.Success)
+      if (_unityWebRequest.result != UnityWebRequest.Result.Success)
         throw new WebRequestException (
-          (int)this.unityWebRequest.responseCode,
-          this.unityWebRequest.downloadHandler.text,
+          (int)_unityWebRequest.responseCode,
+          _unityWebRequest.downloadHandler.text,
           this.url
         );
       //
-      var _responseText = this.unityWebRequest.downloadHandler.text;
+      var _responseText = _unityWebRequest.downloadHandler.text;
       var _hasResponseText = _responseText.Trim ().Length > 0;
       if (_hasResponseText == true) {
-        switch (ContentTypeExtension.Parse (this.unityWebRequest)) {
+        switch (ContentTypeExtension.Parse (_unityWebRequest)) {
           // 
           default:
           case ContentType.Unsupported:
@@ -103,6 +99,7 @@ namespace JeffreyLanters.WebRequests {
               JsonUtility.FromJson<ResponseDataType> (_responseText);
         }
       }
+      //
       return default (ResponseDataType);
     }
 
@@ -110,14 +107,22 @@ namespace JeffreyLanters.WebRequests {
     /// 
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CreateAndSendUnityWebRequest () {
+    private IEnumerator SendUnityWebRequest (UnityWebRequest unityWebRequest) {
+      yield return unityWebRequest.SendWebRequest ();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    private UnityWebRequest ToUnityWebRequest () {
       //
-      this.unityWebRequest = new UnityWebRequest (this.url);
-      this.unityWebRequest.method = this.method.ToString ().ToUpper ();
-      this.unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", this.unityWebRequest.method);
+      var _unityWebRequest = new UnityWebRequest (this.url);
+      _unityWebRequest.method = this.method.ToString ().ToUpper ();
+      _unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", _unityWebRequest.method);
       //
       foreach (var _header in this.headers)
-        this.unityWebRequest.SetRequestHeader (_header.name, _header.value);
+        _unityWebRequest.SetRequestHeader (_header.name, _header.value);
       //
       if (this.body != null) {
         var _encodedBody = null as byte[];
@@ -133,11 +138,11 @@ namespace JeffreyLanters.WebRequests {
             _encodedBody = Encoding.ASCII.GetBytes (JsonUtility.ToJson (this.body));
             break;
         }
-        this.unityWebRequest.uploadHandler = new UploadHandlerRaw (_encodedBody);
-        this.unityWebRequest.uploadHandler.contentType = this.contentType.Stringify ();
+        _unityWebRequest.uploadHandler = new UploadHandlerRaw (_encodedBody);
+        _unityWebRequest.uploadHandler.contentType = this.contentType.Stringify ();
       }
-      this.unityWebRequest.downloadHandler = new DownloadHandlerBuffer ();
-      yield return this.unityWebRequest.SendWebRequest ();
+      _unityWebRequest.downloadHandler = new DownloadHandlerBuffer ();
+      return _unityWebRequest;
     }
   }
 }
