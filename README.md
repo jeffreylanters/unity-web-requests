@@ -77,10 +77,10 @@ public class WebRequestTest : MonoBehaviour {
       var authentication = await new WebRequest<AuthenticationResponse> ("https://myapi.com/authenticate") {
         method = RequestMethod.Post,
         contentType = ContentType.ApplicationJson,
-        body = JsonUtility.ToJson (new AuthenticationRequest () {
+        body = new AuthenticationRequest () {
           userName = "Jeffrey",
           password = "password"
-        })
+        }
       }.Send ();
       var users = await new WebRequest<User[]> ("https://myapi.com/users") {
         headers = new Header[] {
