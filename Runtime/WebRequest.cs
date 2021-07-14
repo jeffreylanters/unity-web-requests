@@ -8,22 +8,9 @@ using System.Text;
 namespace JeffreyLanters.WebRequests {
 
   /// <summary>
-  /// Wrapper class for creating and sending responseless web requests.
-  /// </summary>
-  public class WebRequest : WebRequest<EmptyResponse> {
-
-    /// <summary>
-    /// Creates a new type-less web request.
-    /// </summary>
-    /// <param name="url">The URL of the web request.</param>
-    public WebRequest (string url) : base (url) { }
-  }
-
-  /// <summary>
   /// Wrapper class for creating and sending web requests to external servers.
   /// </summary>
-  /// <typeparam name="ResponseDataType">The type the response will be cased to.</typeparam>
-  public class WebRequest<ResponseDataType> where ResponseDataType : class {
+  public class WebRequest {
 
     /// <summary>
     /// The URL of the web request.
@@ -48,7 +35,8 @@ namespace JeffreyLanters.WebRequests {
     public object body = null;
 
     /// <summary>
-    /// 
+    /// The headers of the web request. These request headers will be appended
+    /// when the request will be sent over to the server.
     /// </summary>
     public Header[] headers = new Header[0];
 
@@ -64,51 +52,36 @@ namespace JeffreyLanters.WebRequests {
     /// Sends the web request.
     /// </summary>
     /// <returns>A task which will return the response.</returns>
-    public async Task<ResponseDataType> Send () {
-      //
+    public async Task<WebRequestResponse> Send () {
       var _didComplete = false;
-      var _unityWebRequest = this.ToWebRequestHandler ();
+      var _webRequestHandler = this.ToWebRequestHandler ();
+      // The Routine Ticker will instanciate a coroutine which will yield the
+      // sending of the actual web requesting using the web request handler.
+      // An async routine will await this completion and will halt the method.
       RoutineTicker.StartCompletableCoroutine (
-        this.SendWebRequestHandler (_unityWebRequest),
+        this.SendWebRequestHandler (_webRequestHandler),
         () => _didComplete = true);
-      while (_didComplete == false)
+      while (_didComplete == false) {
         await Task.Yield ();
-      //
-      if (_unityWebRequest.result != WebRequestHandler.Result.Success)
-        throw new WebRequestException (
-          (int)_unityWebRequest.responseCode,
-          _unityWebRequest.downloadHandler.text,
-          this.url
-        );
-      //
-      var _responseText = _unityWebRequest.downloadHandler.text;
-      var _hasResponseText = _responseText.Trim ().Length > 0;
-      if (_hasResponseText == true) {
-        switch (ContentTypeExtension.Parse (_unityWebRequest)) {
-          // 
-          default:
-          case ContentType.Unsupported:
-            return default (ResponseDataType);
-          //
-          case ContentType.TextPlain:
-            return _responseText as ResponseDataType;
-          //
-          case ContentType.ApplicationJson:
-            return typeof (ResponseDataType).IsArray ?
-              JsonUtility.FromJson<JsonArrayWrapper<ResponseDataType>> ($"{{\"array\":{_responseText}}}").array :
-              JsonUtility.FromJson<ResponseDataType> (_responseText);
-        }
       }
-      //
-      return default (ResponseDataType);
+      // When the web request did not result in a successfull flight, an
+      // specific web request exception will be thrown. This exception contains
+      // data in order to debug the HTTP problem.
+      if (_webRequestHandler.result != WebRequestHandler.Result.Success) {
+        throw new WebRequestException (_webRequestHandler);
+      }
+      // When everything went right, a web request response object will be
+      // returned, containing the web request's response data allowing for the
+      // application to extract as various data types.
+      return new WebRequestResponse (_webRequestHandler);
     }
 
     /// <summary>
     /// Invokes the send method on web request handler.
     /// </summary>
     /// <returns>An enumerator yielding the web request.</returns>
-    private IEnumerator SendWebRequestHandler (WebRequestHandler unityWebRequest) {
-      yield return unityWebRequest.SendWebRequest ();
+    private IEnumerator SendWebRequestHandler (WebRequestHandler webRequestHandler) {
+      yield return webRequestHandler.SendWebRequest ();
     }
 
     /// <summary>
@@ -117,34 +90,30 @@ namespace JeffreyLanters.WebRequests {
     /// </summary>
     /// <returns>A web request handler.</returns>
     private WebRequestHandler ToWebRequestHandler () {
-      //
-      var _unityWebRequest = new WebRequestHandler ();
-      _unityWebRequest.url = this.url;
-      _unityWebRequest.method = this.method.ToString ().ToUpper ();
-      _unityWebRequest.SetRequestHeader ("X-HTTP-Method-Override", _unityWebRequest.method);
-      //
-      foreach (var _header in this.headers)
-        _unityWebRequest.SetRequestHeader (_header.name, _header.value);
-      //
-      if (this.body != null) {
-        var _encodedBody = null as byte[];
-        switch (this.contentType) {
-          //
-          default:
-          case ContentType.Unsupported:
-          case ContentType.TextPlain:
-            _encodedBody = Encoding.ASCII.GetBytes (this.body.ToString ());
-            break;
-          //
-          case ContentType.ApplicationJson:
-            _encodedBody = Encoding.ASCII.GetBytes (JsonUtility.ToJson (this.body));
-            break;
-        }
-        _unityWebRequest.uploadHandler = new UploadHandlerRaw (_encodedBody);
-        _unityWebRequest.uploadHandler.contentType = this.contentType.Stringify ();
+      // Initializes a new web request handler which will eventually be sent and
+      // sets its meta-data such as the url and method.
+      var _webRequestHandler = new WebRequestHandler ();
+      _webRequestHandler.url = this.url;
+      _webRequestHandler.method = this.method.ToString ().ToUpper ();
+      // Sets all of the headers of the request handler. Some Unity builds will
+      // incorrectly set the HTTP Method, so an alternative override value will
+      // be passed along as well. Then the custom headers will be appended.
+      _webRequestHandler.SetRequestHeader ("X-HTTP-Method-Override", _webRequestHandler.method);
+      foreach (var _header in this.headers) {
+        _webRequestHandler.SetRequestHeader (_header.name, _header.value);
       }
-      _unityWebRequest.downloadHandler = new DownloadHandlerBuffer ();
-      return _unityWebRequest;
+      // When the web request contents body data, it will be converted to a
+      // string allowing any type of data, and then converting it into an
+      // encoded byte array which will be set as the upload handlers data.
+      if (this.body != null) {
+        var _encodedBody = Encoding.ASCII.GetBytes (this.body.ToString ());
+        _webRequestHandler.uploadHandler = new UploadHandlerRaw (_encodedBody);
+        _webRequestHandler.uploadHandler.contentType = this.contentType.Stringify ();
+      }
+      // Add a new download handler to the web request handler allowing for a
+      // reponse to come in.
+      _webRequestHandler.downloadHandler = new DownloadHandlerBuffer ();
+      return _webRequestHandler;
     }
   }
 }
