@@ -53,6 +53,7 @@ The Web Request module provides a Dot Net for Unity interface for accessing and 
 - Working out-of-the-box, support for HTTPS and working on all platforms
 - No callback-, coroutine- or action-hell thanks to full Async / Await support
 - Built on top of the existing Unity Web Request framework
+- Full support for sending and receiving JSON data including arrays
 - Inspired on the worlds most populair Fetch API used in browsers
 
 A basic Web Request is really simple to set up. Have a look at the following code:
