@@ -1,9 +1,6 @@
+<h1><img src="https://raw.githubusercontent.com/jeffreylanters/unity-web-requests/master/.github/WIKI/repository-readme-splash.png" width="100%"></h1>
+
 <div align="center">
-
-<img src="https://raw.githubusercontent.com/jeffreylanters/unity-web-requests/master/.github/WIKI/repository-readme-splash.png" width="100%">
-
-</br>
-</br>
 
 [![openupm](https://img.shields.io/npm/v/nl.jeffreylanters.web-requests?label=UPM&registry_uri=https://package.openupm.com&style=for-the-badge&color=232c37)](https://openupm.com/packages/nl.jeffreylanters.web-requests/)
 [![](https://img.shields.io/github/stars/jeffreylanters/unity-web-requests.svg?style=for-the-badge)]()
@@ -27,7 +24,7 @@ Hi! My name is Jeffrey Lanters, thanks for checking out my modules! I've been a 
 **Made with &hearts; by Jeffrey Lanters**
 **&Gt;**
 
-</br>
+</br></br>
 
 </div>
 
@@ -60,7 +57,7 @@ This API is heavily based on the Fetch API, but differs in the following signifi
 A basic Web Request is really simple to set up. Have a look at the following code:
 
 ```csharp
-var request = await new WebRequest ("https://example.com/resource").Send ();
+var response = await new WebRequest ("https://example.com/resource").Send ();
 ```
 
 Here we are fetching text across the network. The simplest use of a Web Request takes one argument, the URL to the resource you want to fetch. This is typically an absolute URL with the host component. When building for WebGL, If the URL has the host of another site, the request is performed in accordance to CORS.
@@ -68,9 +65,9 @@ Here we are fetching text across the network. The simplest use of a Web Request 
 This request returns a Task containing the response (a Response object). This is just an HTTP response, not the actual text or JSON. To extract the Text or JSON content from the response, we use the `Response.Text ()` method, or the `Response.Json ()` method accordingly. When extracting the content as a JSON object, top level array types are supported and will be wrapped automatically in order to be parsed by Unity.
 
 ```csharp
-var request = await new WebRequest ("https://example.com/resource").Send ();
-var text = request.Text ();
-var model = request.Json<DataType> ();
+var response = await new WebRequest ("https://example.com/resource").Send ();
+var text = response.Text ();
+var model = response.Json<DataType> ();
 ```
 
 ## Making request with different Methods
@@ -80,7 +77,7 @@ HTTP defines a set of request methods to indicate the desired action to be perfo
 Changing the request method can be done during the initialisation of the web request. Have a look at the following code:
 
 ```csharp
-new WebRequest ("https://example.com/resource") {
+var request = new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post
 };
 ```
@@ -125,4 +122,19 @@ public class User {
   public string firstName;
   public string lastName;
 }
+```
+
+## Adding custom headers to the request
+
+The Header interface of the Web Request module allows you to add specific header values with your HTTP requests. A Web Request consists of a list of Header objects, which is initially empty and can consist of zero or more name and value pairs. You can add when instantiating a new Web Request (see Examples.) In all methods of this model, header names are matched by case-insensitive byte sequence.
+
+For security reasons, some headers can only be controlled by the user agent. These headers include the forbidden header names and forbidden response header names.
+
+```cs
+var request = new WebRequest ("https://example.com/resource") {
+  headers = new Header[] {
+    new Header("Authorization", "some-very-secret-token"),
+    new Header("Content-Type", "Custom/ContentType"),
+  }
+};
 ```
