@@ -1,2 +1,0 @@
-- remove automatic parsing and add .ToJson() method
-- implement manual json body setting
