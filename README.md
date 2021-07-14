@@ -51,21 +51,27 @@ openupm add nl.jeffreylanters.web-requests
 
 # Documentation
 
-The Web Request API provides a Dot Net for Unity interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global WebRequest model that provides an easy, logical way to fetch resources asynchronously across the network.
+The Web Request module provides a Dot Net for Unity interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global WebRequest model that provides an easy, logical way to fetch resources asynchronously across the network.
 
-This API is based on the Fetch API, but differs in the following significant ways:
+This API is heavily based on the Fetch API, but differs in the following significant ways:
 
 - The response returned from fetch() will reject on HTTP error status 400 or above. While Fetch will always fulfill as soon as the server responds with headers.
 
 A basic fetch request is really simple to set up. Have a look at the following code:
 
 ```csharp
-var username = await new WebRequest ("https://myapi.com/username").Send ();
+var request = await new WebRequest ("https://example.com/resource").Send ();
 ```
 
-Here we are fetching plain text across the network. The use of the WebRequest model takes one argument — the path to the resource you want to fetch — and returns a task containing the response in plain text.
+Here we are fetching text across the network. The simplest use of a Web Request takes one argument, the URL to the resource you want to fetch. This is typically an absolute URL with the host component. When building for WebGL, If the URL has the host of another site, the request is performed in accordance to CORS.
 
-This is just a plain text HTTP response, not the actual JSON. To extract for example the JSON body content from the response, use the Json Decoder.
+This request returns a Task containing the response (a Response object). This is just an HTTP response, not the actual text or JSON. To extract the Text or JSON content from the response, we use the `Response.Text ()` method, or the `Response.Json ()` method accordingly. When extracting the content as a JSON object, top level array types are supported and will be wrapped automatically in order to be parsed by Unity.
+
+```csharp
+var request = await new WebRequest ("https://example.com/resource").Send ();
+var text = request.Text ();
+var model = request.Json<DataType> ();
+```
 
 ## Making request with different Methods
 
@@ -74,22 +80,49 @@ HTTP defines a set of request methods to indicate the desired action to be perfo
 Changing the request method can be done during the initialisation of the web request. Have a look at the following code:
 
 ```csharp
-var token = await new WebRequest ("https://myapi.com/authentication") {
+new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post
-}.Send ();
+};
 ```
 
 ## Sending data with the request
 
-Depending on your server's configuration, various request methods will allow a body property which can contain post data.
+Depending on your server's configuration, various request methods will allow a body property which can contain post data. This can vary from sending plain text as the request's body to creating actual form data.
 
 ### Sending plain text
 
-Sending plain text with your web request can be done by assigning the body property, this could be any primitive type such as a string or number. Have a look at the following code:
+Sending plain text with your web request can be done by assigning the body property, this could be any type such as a primitive string or number or any class which will be stringified right before sending. Have a look at the following code:
 
 ```csharp
-await new WebRequest ("https://myapi.com/authentication") {
+var response = await new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post,
-  body = "r14e77nF09NIy1LE"
+  body = "Hello, World!"
 }.Send ();
+```
+
+### Sending JSON data
+
+The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may be sent as a JSON object or a query string. Some APIs allow both types, while some require just one or the other. API requests are sent with headers that include information about the request.
+
+When sending data with a Web Request, you will need to specify the Content-type, which tells the API if the data you sent is JSON or a query string. This is another property you can pass into the options with your Web Request. To send data as a JSON object, use the built-in JsonUtility method to convert your data into a string. For your headers Content Type use ApplicationJson as the value.
+
+Have a look at the following code:
+
+> Note that objects that should be able to be parsed and stringified from and into JSON do require to be Serializable as shown below in the example.
+
+```csharp
+var response = await new WebRequest ("https://example.com/resource") {
+  method = RequestMethod.Post,
+  contentType = ContentType.ApplicationJson,
+  body = JsonUtility.ToJson (new User () {
+    firstName = "John",
+    lastName = "Doe"
+  })
+}.Send ();
+
+[System.Serializable]
+public class User {
+  public string firstName;
+  public string lastName;
+}
 ```
