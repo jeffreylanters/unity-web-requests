@@ -48,11 +48,12 @@ openupm add nl.jeffreylanters.web-requests
 
 # Documentation
 
-The Web Request module provides a Dot Net for Unity interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global WebRequest model that provides an easy, logical way to fetch resources asynchronously across the network.
+The Web Request module provides a Dot Net for Unity interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global WebRequest model that provides an easy, logical way to fetch resources asynchronously across the network. The module delivers the following key features:
 
-This API is heavily based on the Fetch API, but differs in the following significant ways:
-
-- The response returned from fetch() will reject on HTTP error status 400 or above. While Fetch will always fulfill as soon as the server responds with headers.
+- Working out-of-the-box, support for HTTPS and working on all platforms
+- No callback-, coroutine- or action-hell thanks to full Async / Await support
+- Built on top of the existing Unity Web Request framework
+- Inspired on the worlds most populair Fetch API used in browsers
 
 A basic Web Request is really simple to set up. Have a look at the following code:
 
