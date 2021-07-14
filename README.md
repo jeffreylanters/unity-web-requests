@@ -9,7 +9,7 @@
 [![](https://img.shields.io/github/stars/jeffreylanters/unity-web-requests.svg?style=for-the-badge)]()
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg?style=for-the-badge)]()
 
-The WebRequest API provides an interface for accessing the HTTP pipeline by implementing a Request model that provides an easy, await-able and extendable way to fetch resources asynchronously across the network.
+The WebRequest API provides an easy interface for accessing the HTTP pipeline by implementing a Request model that provides an easy, await-able and extendable way to fetch resources asynchronously across the network.
 
 **&Lt;**
 [**Installation**](#installation) &middot;
@@ -53,15 +53,19 @@ openupm add nl.jeffreylanters.web-requests
 
 The Web Request API provides a Dot Net for Unity interface for accessing and manipulating parts of the HTTP pipeline, such as requests and responses. It also provides a global WebRequest model that provides an easy, logical way to fetch resources asynchronously across the network.
 
+This API is based on the Fetch API, but differs in the following significant ways:
+
+- The response returned from fetch() will reject on HTTP error status 400 or above. While Fetch will always fulfill as soon as the server responds with headers.
+
 A basic fetch request is really simple to set up. Have a look at the following code:
 
 ```csharp
-var username = await new WebRequest<string> ("https://myapi.com/username").Send ();
+var username = await new WebRequest ("https://myapi.com/username").Send ();
 ```
 
-Here we are fetching plain text across the network. The use of the WebRequest model takes one argument — the path to the resource you want to fetch — and returns a task containing the response of the generic response data type.
+Here we are fetching plain text across the network. The use of the WebRequest model takes one argument — the path to the resource you want to fetch — and returns a task containing the response in plain text.
 
-The response will be based on two factors, the web request will attempt to cast the raw response data into the generic response type based on the response's content type. See [supported content types](#supported-content-types) for more information about request and response content types.
+This is just a plain text HTTP response, not the actual JSON. To extract for example the JSON body content from the response, use the Json Decoder.
 
 ## Making request with different Methods
 
@@ -70,7 +74,7 @@ HTTP defines a set of request methods to indicate the desired action to be perfo
 Changing the request method can be done during the initialisation of the web request. Have a look at the following code:
 
 ```csharp
-var token = await new WebRequest<string> ("https://myapi.com/authentication") {
+var token = await new WebRequest ("https://myapi.com/authentication") {
   method = RequestMethod.Post
 }.Send ();
 ```
@@ -87,26 +91,5 @@ Sending plain text with your web request can be done by assigning the body prope
 await new WebRequest ("https://myapi.com/authentication") {
   method = RequestMethod.Post,
   body = "r14e77nF09NIy1LE"
-}.Send ();
-```
-
-### Sending JSON
-
-Have a look at the following code:
-
-```csharp
-[Serializable]
-public class AuthenticationRequestModel {
-  public string username;
-  public string password;
-}
-
-await new WebRequest ("https://myapi.com/authentication") {
-  method = RequestMethod.Post,
-  contentType = ContentType.ApplicationJson,
-  body = new AuthenticationRequestModel () {
-    username = "admin",
-    password = "r14e77nF09NIy1LE"
-  },
 }.Send ();
 ```
