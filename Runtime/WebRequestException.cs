@@ -1,4 +1,5 @@
 ﻿using System;
+using JeffreyLanters.WebRequests.Core;
 
 namespace JeffreyLanters.WebRequests {
 
@@ -36,12 +37,13 @@ namespace JeffreyLanters.WebRequests {
     /// <param name="httpStatusCode">The status code of the servers response.</param>
     /// <param name="rawResponseData">The raw response data of the catched request, may contain information.</param>
     /// <param name="url">The URL of which the request was trying to reach.</param>
-    public WebRequestException (int httpStatusCode, string rawResponseData, string url) {
-      this.httpStatusCode = httpStatusCode;
+    // public WebRequestException (int httpStatusCode, string rawResponseData, string url) {
+    public WebRequestException (WebRequestHandler webRequestHandler) {
+      this.httpStatusCode = (int)webRequestHandler.responseCode;
       if (HttpStatus.IsDefined (typeof (HttpStatus), this.httpStatusCode))
         this.httpStatus = (HttpStatus)httpStatusCode;
-      this.rawResponseData = rawResponseData;
-      this.url = url;
+      this.rawResponseData = webRequestHandler.downloadHandler.text;
+      this.url = webRequestHandler.url;
     }
 
     /// <summary>
