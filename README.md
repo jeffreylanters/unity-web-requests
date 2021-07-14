@@ -57,7 +57,7 @@ This API is heavily based on the Fetch API, but differs in the following signifi
 
 - The response returned from fetch() will reject on HTTP error status 400 or above. While Fetch will always fulfill as soon as the server responds with headers.
 
-A basic fetch request is really simple to set up. Have a look at the following code:
+A basic Web Request is really simple to set up. Have a look at the following code:
 
 ```csharp
 var request = await new WebRequest ("https://example.com/resource").Send ();
