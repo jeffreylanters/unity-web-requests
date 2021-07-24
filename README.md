@@ -66,8 +66,11 @@ Here we are fetching text across the network. The simplest use of a Web Request 
 
 This request returns a Task containing the response (a Response object). This is just an HTTP response, not the actual text or JSON. To extract the Text or JSON content from the response, we use the `Response.Text ()` method, or the `Response.Json ()` method accordingly. When extracting the content as a JSON object, top level array types are supported and will be wrapped automatically in order to be parsed by Unity.
 
+When breaking it down, have a look at the following code:
+
 ```csharp
-var response = await new WebRequest ("https://example.com/resource").Send ();
+var request = new WebRequest ("https://example.com/resource");
+var response = await request.Send ();
 var text = response.Text ();
 var model = response.Json<DataType> ();
 ```
