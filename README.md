@@ -87,6 +87,23 @@ var request = new WebRequest ("https://example.com/resource") {
 };
 ```
 
+## Catching Request and HTTP Errors
+
+When the Web Request ran into a problem while fetching the data from the server, a Web Request Exception will be thrown. This Exception can easily be caught using a try catch closure. The Web Request's Exception contains useful information such as the HTTP Status Code and Typed HTTP Status which can be matched against the build in enum of standardised HTTP Status Codes.
+
+Catching errors can be done very easily and multiple Web Requests can be made within the try closure. Have a look at the following code:
+
+```csharp
+try {
+  var response = await new WebRequest ("https://example.com/resource").Send ();
+} catch (WebRequestException exception) {
+  Debug.Log ($"Error while getting data from {exception.url}");
+  if (exception.httpStatus == HttpStatus.Unauthorized) {
+    Debug.Log ("Not authorized!");
+  }
+}
+```
+
 ## Sending data with the request
 
 Depending on your server's configuration, various request methods will allow a body property which can contain post data. This can vary from sending plain text as the request's body to creating actual form data.
