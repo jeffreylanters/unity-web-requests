@@ -75,18 +75,6 @@ var text = response.Text ();
 var model = response.Json<DataType> ();
 ```
 
-## Making request with different Methods
-
-HTTP defines a set of request methods to indicate the desired action to be performed for a given resource. Although they can also be nouns, these request methods are sometimes referred to as HTTP verbs. Each of them implements a different semantic, but some common features are shared by a group of them: e.g. a request method can be safe, idempotent, or cacheable.
-
-Changing the request method can be done during the initialisation of the web request. Have a look at the following code:
-
-```csharp
-var request = new WebRequest ("https://example.com/resource") {
-  method = RequestMethod.Post
-};
-```
-
 ## Catching Request and HTTP Errors
 
 When the Web Request ran into a problem while fetching the data from the server, a Web Request Exception will be thrown. This Exception can easily be caught using a try catch closure. The Web Request's Exception contains useful information such as the HTTP Status Code and Typed HTTP Status which can be matched against the build in enum of standardised HTTP Status Codes.
@@ -102,6 +90,18 @@ try {
     Debug.Log ("Not authorized!");
   }
 }
+```
+
+## Making request with different Methods
+
+HTTP defines a set of request methods to indicate the desired action to be performed for a given resource. Although they can also be nouns, these request methods are sometimes referred to as HTTP verbs. Each of them implements a different semantic, but some common features are shared by a group of them: e.g. a request method can be safe, idempotent, or cacheable.
+
+Changing the request method can be done during the initialisation of the web request. Have a look at the following code:
+
+```csharp
+var request = new WebRequest ("https://example.com/resource") {
+  method = RequestMethod.Post
+};
 ```
 
 ## Sending data with the request
