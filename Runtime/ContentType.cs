@@ -20,6 +20,11 @@ namespace JeffreyLanters.WebRequests {
     ApplicationJson = 1,
 
     /// <summary>
+    /// Multipart Form Data.
+    /// </summary>
+    MultipartFormData = 2,
+
+    /// <summary>
     /// A not supported content type.
     /// </summary>
     Unsupported = 999,
@@ -43,14 +48,16 @@ namespace JeffreyLanters.WebRequests {
           return "text/plain";
         case ContentType.ApplicationJson:
           return "application/json";
+        case ContentType.MultipartFormData:
+          return "multipart/form-data";
       }
     }
 
     /// <summary>
-    /// Parses a http valid string value into a content type.
+    /// Converts the stringified content type into a ContentType enum value.
     /// </summary>
-    /// <param name="stringifiedContentType">The stringified content type.</param>
-    /// <returns>The Content type.</returns>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>The ContentType enum value.</returns>
     public static ContentType Parse (string stringifiedContentType) {
       switch (stringifiedContentType) {
         default:
@@ -59,6 +66,8 @@ namespace JeffreyLanters.WebRequests {
           return ContentType.TextPlain;
         case "application/json":
           return ContentType.ApplicationJson;
+        case "multipart/form-data":
+          return ContentType.MultipartFormData;
       }
     }
 
