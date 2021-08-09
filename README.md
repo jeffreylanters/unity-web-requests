@@ -137,7 +137,8 @@ var response = await new WebRequest ("https://example.com/resource") {
   contentType = ContentType.ApplicationJson,
   body = JsonUtility.ToJson (new User () {
     firstName = "John",
-    lastName = "Doe"
+    lastName = "Doe",
+    age = 26
   })
 }.Send ();
 
@@ -145,6 +146,7 @@ var response = await new WebRequest ("https://example.com/resource") {
 public class User {
   public string firstName;
   public string lastName;
+  public int age;
 }
 ```
 
@@ -162,7 +164,8 @@ var response = await new WebRequest ("https://example.com/resource") {
   contentType = ContentType.MultipartFormData,
   body = FormDataUtility.ToFormData (new User () {
     firstName = "John",
-    lastName = "Doe"
+    lastName = "Doe",
+    age = 26
   })
 }.Send ();
 
@@ -170,6 +173,7 @@ var response = await new WebRequest ("https://example.com/resource") {
 public class User {
   public string firstName;
   public string lastName;
+  public int age;
 }
 ```
 
