@@ -114,7 +114,7 @@ namespace JeffreyLanters.WebRequests {
         // boundary to the content type. This header will be used on the server
         // side to deconstruct the request into its various parts.
         if (this.contentType == ContentType.MultipartFormData) {
-          _contentType += $"; boundary={FormData.boundary}";
+          _contentType += $"; boundary={FormDataUtility.boundary}";
         }
         _webRequestHandler.uploadHandler = new UploadHandlerRaw (_encodedBody);
         _webRequestHandler.uploadHandler.contentType = _contentType;
