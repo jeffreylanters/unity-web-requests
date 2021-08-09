@@ -26,7 +26,7 @@ namespace JeffreyLanters.WebRequests {
       var _targetObjectType = targetObject.GetType ();
       // Loop through all the public fields and properties of the target object.
       var _fields = _targetObjectType.GetFields (BindingFlags.Public | BindingFlags.Instance);
-      var _properties = _targetObjectType.GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var _properties = _targetObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
       foreach (var _field in _fields) {
         _formDataEntries.Add (_field.Name, _field.GetValue (targetObject).ToString ());
       }
