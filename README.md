@@ -139,7 +139,7 @@ var response = await new WebRequest ("https://example.com/resource") {
   })
 }.Send ();
 
-[System.Serializable]
+[Serializable]
 public class User {
   public string firstName;
   public string lastName;
@@ -167,6 +167,12 @@ var response = await new WebRequest ("https://example.com/resource") {
     lastName = "Doe"
   })
 }.Send ();
+
+[Serializable]
+public class User {
+  public string firstName;
+  public string lastName;
+}
 ```
 
 ## Adding custom headers to the request
