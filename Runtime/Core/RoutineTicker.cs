@@ -41,8 +41,11 @@ namespace JeffreyLanters.WebRequests.Core {
     /// <param name="onComplete">Event handler which will invoke after the routine completes.</param>
     /// <returns>An enumerator.</returns>
     public static void StartCompletableCoroutine (IEnumerator routine, Action onComplete) {
-      if (RoutineTicker.routineTickerComponent == null)
+      if (RoutineTicker.routineTickerComponent == null) {
         RoutineTicker.routineTickerComponent = new GameObject ("~RoutineTicker").AddComponent<RoutineTickerComponent> ();
+        RoutineTicker.routineTickerComponent.gameObject.hideFlags = HideFlags.HideInHierarchy;
+        GameObject.DontDestroyOnLoad (RoutineTicker.routineTickerComponent);
+      }
       RoutineTicker.routineTickerComponent.StartCoroutine (RoutineTicker.routineTickerComponent.StartCompletableCoroutine (routine, onComplete));
     }
   }
