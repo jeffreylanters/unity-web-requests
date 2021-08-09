@@ -102,13 +102,22 @@ namespace JeffreyLanters.WebRequests {
       foreach (var _header in this.headers) {
         _webRequestHandler.SetRequestHeader (_header.name, _header.value);
       }
-      // When the web request contents body data, it will be converted to a
+      // When the web request should post a body, it will be converted to a
       // string allowing any type of data, and then converting it into an
       // encoded byte array which will be set as the upload handlers data.
-      if (this.body != null) {
+      if (this.method == RequestMethod.Post && this.body != null) {
         var _encodedBody = Encoding.ASCII.GetBytes (this.body.ToString ());
+        var _contentType = this.contentType.Stringify ();
+        // We'll set the chararacter set the UTF-8 encoding.
+        _contentType += "; charset=utf-8";
+        // When the web request is posting multipart form data, we'll add the
+        // boundary to the content type. This header will be used on the server
+        // side to deconstruct the request into its various parts.
+        if (this.contentType == ContentType.MultipartFormData) {
+          _contentType += $"; boundary={FormData.boundary}";
+        }
         _webRequestHandler.uploadHandler = new UploadHandlerRaw (_encodedBody);
-        _webRequestHandler.uploadHandler.contentType = this.contentType.Stringify ();
+        _webRequestHandler.uploadHandler.contentType = _contentType;
       }
       // Add a new download handler to the web request handler allowing for a
       // reponse to come in.
