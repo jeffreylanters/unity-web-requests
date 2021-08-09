@@ -85,9 +85,9 @@ Catching errors can be done very easily and multiple Web Requests can be made wi
 try {
   var response = await new WebRequest ("https://example.com/resource").Send ();
 } catch (WebRequestException exception) {
-  Debug.Log ($"Error while getting data from {exception.url}");
+  Debug.Log ($"Error {exception.httpStatusCode} while fetching {exception.url}");
   if (exception.httpStatus == HttpStatus.Unauthorized) {
-    Debug.Log ("Not authorized!");
+    Debug.Log ($"Not authorized! {exception.rawResponseData}");
   }
 }
 ```
