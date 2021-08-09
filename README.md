@@ -146,6 +146,29 @@ public class User {
 }
 ```
 
+### Sending Multipart Form Data
+
+Unity Web Requests comes with a custom Form Data Utility allowing for data to be represented as raw Form Data.
+
+The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may be sent as Multipart Form Data or a query string. Some APIs allow both types, while some require just one or the other. API requests are sent with headers that include information about the request.
+
+When sending data with a Web Request, you will need to specify the Content-type, which tells the API if the data you sent is Multipart Form Data or a query string. This is another property you can pass into the options with your Web Request. To send data as a Multipart Form Data, use the custom FormDataUtility method to convert your data into raw Form Data. For your headers Content Type use MultipartFormData as the value.
+
+Have a look at the following code:
+
+> Note that objects that should be able to be parsed and stringified from and into Form Data do require to be Serializable as shown below in the example.
+
+```csharp
+var response = await new WebRequest ("https://example.com/resource") {
+  method = RequestMethod.Post,
+  contentType = ContentType.MultipartFormData,
+  body = FormDataUtility.ToFormData (new User () {
+    firstName = "John",
+    lastName = "Doe"
+  })
+}.Send ();
+```
+
 ## Adding custom headers to the request
 
 The Header interface of the Web Request module allows you to add specific header values with your HTTP requests. A Web Request consists of a list of Header objects, which is initially empty and can consist of zero or more name and value pairs. You can add when instantiating a new Web Request (see Examples.) In all methods of this model, header names are matched by case-insensitive byte sequence.
