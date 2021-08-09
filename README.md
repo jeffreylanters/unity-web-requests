@@ -119,11 +119,13 @@ var response = await new WebRequest ("https://example.com/resource") {
 }.Send ();
 ```
 
+The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may for example be sent as a JSON object, Multipart Form data or a query string. Some APIs allow multiple types, while some require just one or the other. API requests are sent with headers that include information about the request.
+
+When sending data with a Web Request, you will need to specify the Content-type, which tells the API if the data you sent is of a specific type. This is another property you can pass into the options with your Web Request.
+
 ### Sending JSON data
 
-The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may be sent as a JSON object or a query string. Some APIs allow both types, while some require just one or the other. API requests are sent with headers that include information about the request.
-
-When sending data with a Web Request, you will need to specify the Content-type, which tells the API if the data you sent is JSON or a query string. This is another property you can pass into the options with your Web Request. To send data as a JSON object, use the built-in JsonUtility method to convert your data into a string. For your headers Content Type use ApplicationJson as the value.
+To send data as a JSON object, use Unity's built-in JsonUtility method to convert your data into a string. For your headers Content Type use ApplicationJson as the value to indicate your body contains JSON data.
 
 Have a look at the following code:
 
@@ -148,11 +150,7 @@ public class User {
 
 ### Sending Multipart Form Data
 
-Unity Web Requests comes with a custom Form Data Utility allowing for data to be represented as raw Form Data.
-
-The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may be sent as Multipart Form Data or a query string. Some APIs allow both types, while some require just one or the other. API requests are sent with headers that include information about the request.
-
-When sending data with a Web Request, you will need to specify the Content-type, which tells the API if the data you sent is Multipart Form Data or a query string. This is another property you can pass into the options with your Web Request. To send data as a Multipart Form Data, use the custom FormDataUtility method to convert your data into raw Form Data. For your headers Content Type use MultipartFormData as the value.
+To send data as a Multipart Form Data, use the custom built-in FormDataUtility method to convert your data into a string. For your headers Content Type use MultipartFormData as the value to indicate your body contains Form Data.
 
 Have a look at the following code:
 
