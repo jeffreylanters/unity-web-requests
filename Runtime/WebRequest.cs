@@ -28,6 +28,11 @@ namespace JeffreyLanters.WebRequests {
     public ContentType contentType = ContentType.TextPlain;
 
     /// <summary>
+    /// The character set to use when encoding the body.
+    /// </summary>
+    public string characterSet = "utf-8";
+
+    /// <summary>
     /// The raw body of the web request, this value will be stringified based on
     /// the content type and send as an encoded value. When no content type is
     /// specified, the body will be send as a string using plain/text.
@@ -109,7 +114,7 @@ namespace JeffreyLanters.WebRequests {
         var _encodedBody = Encoding.ASCII.GetBytes (this.body.ToString ());
         var _contentType = this.contentType.Stringify ();
         // We'll set the chararacter set the UTF-8 encoding.
-        _contentType += "; charset=utf-8";
+        _contentType += $"; charset={this.characterSet}";
         // When the web request is posting multipart form data, we'll add the
         // boundary to the content type. This header will be used on the server
         // side to deconstruct the request into its various parts.
