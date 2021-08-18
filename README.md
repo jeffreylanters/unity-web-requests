@@ -113,10 +113,10 @@ Depending on your server's configuration, various request methods will allow a b
 Sending plain text with your web request can be done by assigning the body property, this could be any type such as a primitive string or number or any class which will be stringified right before sending. Have a look at the following code:
 
 ```csharp
-var response = await new WebRequest ("https://example.com/resource") {
+var request = new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post,
   body = "Hello, World!"
-}.Send ();
+};
 ```
 
 The body property holds any data you want to send as part of your HTTP (or API) request. Depending on the endpoint, this data may for example be sent as a JSON object, Multipart Form data or a query string. Some APIs allow multiple types, while some require just one or the other. API requests are sent with headers that include information about the request.
@@ -132,7 +132,7 @@ Have a look at the following code:
 > Note that objects that should be able to be parsed and stringified from and into JSON do require to be Serializable as shown below in the example.
 
 ```csharp
-var response = await new WebRequest ("https://example.com/resource") {
+var request = new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post,
   contentType = ContentType.ApplicationJson,
   body = JsonUtility.ToJson (new User () {
@@ -140,7 +140,7 @@ var response = await new WebRequest ("https://example.com/resource") {
     lastName = "Doe",
     age = 26
   })
-}.Send ();
+};
 
 [Serializable]
 public class User {
@@ -159,7 +159,7 @@ Have a look at the following code:
 > Note that objects that should be able to be parsed and stringified from and into Form Data do require to be Serializable as shown below in the example.
 
 ```csharp
-var response = await new WebRequest ("https://example.com/resource") {
+var request = new WebRequest ("https://example.com/resource") {
   method = RequestMethod.Post,
   contentType = ContentType.MultipartFormData,
   body = FormDataUtility.ToFormData (new User () {
@@ -167,7 +167,7 @@ var response = await new WebRequest ("https://example.com/resource") {
     lastName = "Doe",
     age = 26
   })
-}.Send ();
+};
 
 [Serializable]
 public class User {
