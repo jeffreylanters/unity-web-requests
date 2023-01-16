@@ -185,3 +185,29 @@ var request = new WebRequest ("https://example.com/resource") {
   }
 };
 ```
+
+## Miscellanious Web Request Options
+
+### Appending query parameters to the request
+
+The Web Request module allows you to add query parameters to your request. This can be done by passing a list of QueryParameter objects to the Web Request's queryParameters property. Have a look at the following code:
+
+```csharp
+var request = new WebRequest ("https://example.com/resource") {
+  queryParameters = new QueryParameter[] {
+    new QueryParameter ("limit", 100),
+    new QueryParameter ("filter", "Somestring")
+  }
+};
+```
+
+### Getting additional information about the request
+
+The Web Request module allows you to get additional information about the request. These properties are available on the Web Response object. Have a look at the following code:
+
+```csharp
+var request = new WebRequest ("https://example.com/resource");
+var response = await request.Send ();
+var httpStatusCode = response.httpStatusCode;
+var headers = response.headers;
+```
