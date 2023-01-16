@@ -19,6 +19,10 @@ namespace JeffreyLanters.WebRequests.Tests {
         foreach (var user in users) {
           Debug.Log ($"Got user {user.name}!");
         }
+        Debug.Log ($"Response status was {response.httpStatus}");
+        foreach (var header in response.headers) {
+          Debug.Log ($"Response header {header.name} has value {header.value}");
+        }
       } catch (WebRequestException exception) {
         Debug.Log ($"Error while getting data from {exception.url}, error {exception.httpStatus}");
       }
