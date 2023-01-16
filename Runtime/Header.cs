@@ -1,3 +1,4 @@
+using JeffreyLanters.WebRequests.Core;
 using System.Collections.Generic;
 
 namespace JeffreyLanters.WebRequests {
@@ -7,27 +8,14 @@ namespace JeffreyLanters.WebRequests {
   /// an HTTP request or response. An HTTP header consists of its case-insensitive 
   /// name followed by its value. Whitespace before the value is ignored.
   /// </summary>
-  public class Header {
-
-    /// <summary>
-    /// The name of header.
-    /// </summary>
-    public string name { get; } = "";
-
-    /// <summary>
-    /// The value of the header.
-    /// </summary>
-    public string value { get; } = "";
+  public class Header : NameValuePair {
 
     /// <summary>
     /// Creates a new header.
     /// </summary>
     /// <param name="name">The name of the header.</param>
     /// <param name="value">The value of the header.</param>
-    public Header (string name, object value) {
-      this.name = name;
-      this.value = value.ToString ();
-    }
+    public Header (string name, object value) : base (name, value) { }
 
     /// <summary>
     /// Returns an array of headers from a dictionary.
