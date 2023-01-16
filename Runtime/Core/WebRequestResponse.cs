@@ -38,7 +38,7 @@ namespace JeffreyLanters.WebRequests.Core {
     /// <param name="webRequestHandler"></param>
     public WebRequestResponse (WebRequestHandler webRequestHandler) {
       this.webRequestResponseText = webRequestHandler.downloadHandler.text;
-      this.headers = Header.FromDictionary (webRequestHandler.GetResponseHeaders ());
+      this.headers = Header.ManyFromDictionary (webRequestHandler.GetResponseHeaders ());
       this.httpStatusCode = (int)webRequestHandler.responseCode;
       if (HttpStatus.IsDefined (typeof (HttpStatus), this.httpStatusCode))
         this.httpStatus = (HttpStatus)httpStatusCode;

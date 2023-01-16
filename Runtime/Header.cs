@@ -22,7 +22,7 @@ namespace JeffreyLanters.WebRequests {
     /// </summary>
     /// <param name="dictionary">The dictionary to convert.</param>
     /// <returns>An array of headers.</returns>
-    public static Header[] FromDictionary (Dictionary<string, string> dictionary) {
+    public static Header[] ManyFromDictionary (Dictionary<string, string> dictionary) {
       var headers = new Header[dictionary.Count];
       var index = 0;
       foreach (var key in dictionary.Keys) {
