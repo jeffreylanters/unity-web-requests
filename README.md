@@ -186,7 +186,7 @@ var request = new WebRequest ("https://example.com/resource") {
 };
 ```
 
-## Miscellanious Web Request Options
+## Miscellaneous Web Request Options
 
 ### Appending query parameters to the request
 
