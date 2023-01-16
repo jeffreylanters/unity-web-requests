@@ -46,6 +46,12 @@ namespace JeffreyLanters.WebRequests {
     public Header[] headers = new Header[0];
 
     /// <summary>
+    /// The query parameters of the web request. These query parameters will be
+    /// appended to the URL when the request will be sent over to the server.
+    /// </summary>
+    public QueryParameter[] queryParameters = new QueryParameter[0];
+
+    /// <summary>
     /// Creates a new web request.
     /// </summary>
     /// <param name="url">The URL of the web request.</param>
@@ -98,7 +104,7 @@ namespace JeffreyLanters.WebRequests {
       // Initializes a new web request handler which will eventually be sent and
       // sets its meta-data such as the url and method.
       var _webRequestHandler = new WebRequestHandler ();
-      _webRequestHandler.url = this.url;
+      _webRequestHandler.url = QueryParameter.AppendManyToUrl (this.url, this.queryParameters);
       _webRequestHandler.method = this.method.ToString ().ToUpper ();
       // Sets all of the headers of the request handler. Some Unity builds will
       // incorrectly set the HTTP Method, so an alternative override value will
