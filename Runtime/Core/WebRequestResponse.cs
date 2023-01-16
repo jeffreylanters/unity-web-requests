@@ -1,7 +1,6 @@
 using System;
 using UnityEngine.Networking;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace JeffreyLanters.WebRequests.Core {
 
@@ -14,19 +13,23 @@ namespace JeffreyLanters.WebRequests.Core {
     /// <summary>
     /// The text response from the web request.
     /// </summary>
-    public string webRequestResponseText { get; private set; } = "";
-
-    public string ErrorMessage { get; private set; } = "";
+    private string webRequestResponseText = "";
 
     /// <summary>
-    /// The response status code from the web request.
+    /// The status code of the servers response.
     /// </summary>
-    public long StatusCode { get; private set; }
+    public int httpStatusCode { get; } = -1;
+
+    /// <summary>
+    /// The definition of a status code contains a human readable notation of 
+    /// the servers response status code.
+    /// </summary>
+    public HttpStatus httpStatus { get; } = HttpStatus.Undefined;
 
     /// <summary>
     /// The response headers from the web request.
     /// </summary>
-    public Dictionary<string, string> headers { get; private set; }
+    public Header[] headers { get; private set; }
 
     /// <summary>
     /// Instanciates a new web request response based of off a web request
@@ -34,10 +37,11 @@ namespace JeffreyLanters.WebRequests.Core {
     /// </summary>
     /// <param name="webRequestHandler"></param>
     public WebRequestResponse (WebRequestHandler webRequestHandler) {
-            this.webRequestResponseText = webRequestHandler.downloadHandler.text;
-            this.StatusCode = webRequestHandler.responseCode;
-            this.headers = webRequestHandler.GetResponseHeaders();
-            this.ErrorMessage = webRequestHandler.error;
+      this.webRequestResponseText = webRequestHandler.downloadHandler.text;
+      this.headers = Header.FromDictionary (webRequestHandler.GetResponseHeaders ());
+      this.httpStatusCode = (int)webRequestHandler.responseCode;
+      if (HttpStatus.IsDefined (typeof (HttpStatus), this.httpStatusCode))
+        this.httpStatus = (HttpStatus)httpStatusCode;
     }
 
     /// <summary>
@@ -48,19 +52,13 @@ namespace JeffreyLanters.WebRequests.Core {
       return this.webRequestResponseText;
     }
 
-    public string Content { get
-            {
-                return this.webRequestResponseText;
-            }
-        }
-
-        /// <summary>
-        /// Converts the Web Request's response text as a JSON Objects to a given
-        /// data type.
-        /// </summary>
-        /// <typeparam name="DataType">The Type to convert the JSON to.</typeparam>
-        /// <returns>The Object</returns>
-        public DataType Json<DataType> () where DataType : class {
+    /// <summary>
+    /// Converts the Web Request's response text as a JSON Objects to a given
+    /// data type.
+    /// </summary>
+    /// <typeparam name="DataType">The Type to convert the JSON to.</typeparam>
+    /// <returns>The Object</returns>
+    public DataType Json<DataType> () where DataType : class {
       return typeof (DataType).IsArray ?
         JsonUtility.FromJson<JsonArrayWrapper<DataType>> ($"{{\"array\":{this.webRequestResponseText}}}").array :
         JsonUtility.FromJson<DataType> (this.webRequestResponseText);
