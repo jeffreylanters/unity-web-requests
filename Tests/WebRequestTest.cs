@@ -14,7 +14,13 @@ namespace JeffreyLanters.WebRequests.Tests {
 
     public async void Start () {
       try {
-        var response = await new WebRequest ("https://jsonplaceholder.typicode.com/users").Send ();
+        var request = new WebRequest ("https://jsonplaceholder.typicode.com/users") {
+          headers = new Header[] {
+            new Header ("Content-Type", "application/json")
+          }
+        };
+        Debug.Log ($"URL {request.url}");
+        var response = await request.Send ();
         var users = response.Json<User[]> ();
         foreach (var user in users) {
           Debug.Log ($"Got user {user.name}!");
