@@ -42,15 +42,5 @@ namespace JeffreyLanters.WebRequests {
       _rawFormData += "--";
       return _rawFormData;
     }
-
-    public static string QueryString(IDictionary<string, string> dict)
-    {
-        var list = new List<string>();
-        foreach (var item in dict)
-        {
-            list.Add(item.Key + "=" + item.Value);
-        }
-        return string.Join("&", list);
-    }
-    }
+  }
 }
